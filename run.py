@@ -15,8 +15,8 @@ parser = argparse.ArgumentParser(description='Long Time Series Forecasting Libra
 
 # basic
 parser.add_argument('--is_training', type=int, default=1)
-parser.add_argument('--model', type=str, default='Linear_RevIN',
-                    help='[Linear, Linear_BatchNorm, Linear_MinusLast, Linear_RevIN]')
+parser.add_argument('--model', type=str, default='Linear_DishTS',
+                    help='[Linear, Linear_BatchNorm, Linear_MinusLast, Linear_RevIN, Linear_DishTS]')
 
 # data
 parser.add_argument('--root_path', type=str, default='./data/ETT-small')

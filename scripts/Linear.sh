@@ -1,6 +1,6 @@
 export CUDA_VISIBLE_DEVICES=1
 
-model=Linear_BatchNorm
+model=Linear_DishTS
 
 # ETTh1
 python -u run.py \

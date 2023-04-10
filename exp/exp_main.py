@@ -9,7 +9,7 @@ from tqdm import tqdm
 
 from data_provider.data_factory import data_provider
 from exp.exp_basic import Exp_Basic
-from models import Linear, Linear_BatchNorm, Linear_MinusLast, Linear_RevIN
+from models import Linear, Linear_BatchNorm, Linear_MinusLast, Linear_RevIN, Linear_DishTS
 from utils.metrics import metric
 from utils.tools import EarlyStopping, adjust_learning_rate, visual
 
@@ -26,6 +26,7 @@ class Exp_Main(Exp_Basic):
             'Linear_BatchNorm': Linear_BatchNorm,
             'Linear_MinusLast': Linear_MinusLast,
             'Linear_RevIN': Linear_RevIN,
+            'Linear_DishTS': Linear_DishTS,
 
         }
         model = model_dict[self.args.model].Model(self.args).float()

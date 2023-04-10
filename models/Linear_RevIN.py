@@ -3,25 +3,23 @@ from torch import nn
 
 
 class RevIN(nn.Module):
-    def __init__(self, num_features: int, eps=1e-5):
+    def __init__(self, enc_in, eps=1e-5):
         super(RevIN, self).__init__()
-        self.num_features = num_features
+        self.num_features = enc_in
         self.eps = eps
 
         self.affine_weight = nn.Parameter(torch.ones(self.num_features))
         self.affine_bias = nn.Parameter(torch.zeros(self.num_features))
 
-    def forward(self, x, mode: str):
-        if mode == 'norm':
-            self._get_statistics(x)
+    def forward(self, x, mode='normalize'):
+        if mode == 'normalize':
+            self._preget(x)
             x = self._normalize(x)
-        elif mode == 'denorm':
+        elif mode == 'denormalize':
             x = self._denormalize(x)
-        else:
-            raise NotImplementedError
         return x
 
-    def _get_statistics(self, x):
+    def _preget(self, x):
         self.mean = torch.mean(x, dim=1, keepdim=True).detach()
         self.stdev = torch.sqrt(torch.var(x, dim=1, keepdim=True, unbiased=False) + self.eps).detach()
 
@@ -53,7 +51,9 @@ class Model(nn.Module):
             (1 / self.seq_len) * torch.ones([self.pred_len, self.seq_len]))
 
     def forward(self, x_enc, x_mark_enc, x_mark_dec):
-        x_enc = self.revin(x_enc, 'norm')
+        x_enc = self.revin(x_enc, 'normalize')
+
         output = self.Linear(x_enc.permute(0, 2, 1)).permute(0, 2, 1)
-        output = self.revin(output, 'denorm')
+
+        output = self.revin(output, 'denormalize')
         return output[:, -self.pred_len:, :]
