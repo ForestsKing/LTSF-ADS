@@ -23,6 +23,7 @@ class DishTS(nn.Module):
     def _preget(self, batch_x):
         x_transpose = batch_x.permute(2, 0, 1)
         theta = torch.bmm(x_transpose, self.reduce_mlayer).permute(1, 2, 0)
+        print(batch_x.shape, x_transpose.shape, theta.shape, self.reduce_mlayer.shape)
         theta = F.gelu(theta)
         self.phil, self.phih = theta[:, :1, :], theta[:, 1:, :]
         self.xil = torch.sum(torch.pow(batch_x - self.phil, 2), axis=1, keepdim=True) / (batch_x.shape[1] - 1)
@@ -55,4 +56,4 @@ class Model(nn.Module):
         output = self.Linear(x_enc.permute(0, 2, 1)).permute(0, 2, 1)
 
         output = self.dishts(output, 'denormalize')
-        return output[:, -self.pred_len:, :]
+        return outputs[:, -self.pred_len:, :]
